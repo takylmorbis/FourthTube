@@ -2269,7 +2269,7 @@ void VideoPlayer_init(void) {
 
 				    osTickCounterUpdate(&counter0);
 				    if (!network_decoder.hw_decoder_enabled) {
-					    result = Util_converter_yuv420p_to_bgr565_asm(yuv_video, &video, vid_width, vid_height);
+					    result = Util_converter_y2r_yuv420p_to_bgr565(yuv_video, &video, vid_width, vid_height, false);
 					    video_need_free = true;
 				    }
 				    osTickCounterUpdate(&counter0);
