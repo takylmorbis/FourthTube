@@ -14,7 +14,9 @@
 #include "network_decoder/thumbnail_loader.hpp"
 #include "network_decoder/network_io.hpp"
 #include "util/async_task.hpp"
+#include "ui/views/specialized/modern_succinct_video.hpp"
 
+#define MODERN_VIDEO_LIST_HEIGHT 80
 #define SEARCH_BOX_MARGIN 4
 
 #define URL_BUTTON_WIDTH 60
@@ -183,14 +185,15 @@ static void update_result_bottom_view() {
 static View *result_item_to_view(const YouTubeSuccinctItem &item) {
 	View *res_view;
 	if (item.type == YouTubeSuccinctItem::CHANNEL) {
-		SuccinctChannelView *cur_view = new SuccinctChannelView(0, 0, 320, VIDEO_LIST_THUMBNAIL_HEIGHT);
+		SuccinctChannelView *cur_view = new SuccinctChannelView(0, 0, 320, MODERN_VIDEO_LIST_HEIGHT);
 		cur_view->set_name(item.channel.name);
 		cur_view->set_auxiliary_lines({item.channel.subscribers, item.channel.video_num});
 		cur_view->set_thumbnail_url(item.channel.icon_url);
 		res_view = cur_view;
 	} else {
-		SuccinctVideoView *cur_view = new SuccinctVideoView(0, 0, 320, VIDEO_LIST_THUMBNAIL_HEIGHT);
-		cur_view->set_title_lines(truncate_str(item.get_name(), 320 - (VIDEO_LIST_THUMBNAIL_WIDTH + 3), 2, 0.5, 0.5));
+		ModernSuccinctVideoView *cur_view = new ModernSuccinctVideoView(0, 0, 320, MODERN_VIDEO_LIST_HEIGHT);
+		float title_width = cur_view->get_title_width();
+		cur_view->set_title_lines(truncate_str(item.get_name(), title_width, 2, 0.55, 0.55));
 		if (item.type == YouTubeSuccinctItem::VIDEO) {
 			cur_view->set_auxiliary_lines({item.video.views_str, item.video.publish_date});
 			cur_view->set_bottom_right_overlay(item.video.duration_text);

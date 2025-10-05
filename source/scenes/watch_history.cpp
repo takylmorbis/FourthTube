@@ -13,8 +13,10 @@
 #include "network_decoder/thumbnail_loader.hpp"
 #include "data_io/history.hpp"
 #include "util/misc_tasks.hpp"
+#include "ui/views/specialized/modern_succinct_video.hpp"
 
 #define MAX_THUMBNAIL_LOAD_REQUEST 12
+#define MODERN_VIDEO_LIST_HEIGHT 80
 
 namespace WatchHistory {
 bool thread_suspend = false;
@@ -102,8 +104,8 @@ static void update_watch_history(const std::vector<HistoryVideo> &new_watch_hist
 			last_watch_time_str = tmp;
 		}
 
-		SuccinctVideoView *cur_view =
-		    (new SuccinctVideoView(0, 0, 320, VIDEO_LIST_THUMBNAIL_HEIGHT))
+		ModernSuccinctVideoView *cur_view =
+		    (new ModernSuccinctVideoView(0, 0, 320, MODERN_VIDEO_LIST_HEIGHT))
 		        ->set_title_lines(i.title_lines)
 		        ->set_auxiliary_lines({i.author_name, view_count_str + " " + last_watch_time_str})
 		        ->set_bottom_right_overlay(i.length_text)

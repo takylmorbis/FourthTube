@@ -9,7 +9,7 @@
 #define VIDEO_LIST_THUMBNAIL_WIDTH 96
 
 struct SuccinctVideoView : public FixedSizeView {
-  private:
+  protected:
 	static constexpr double DURATION_FONT_SIZE = 0.4; // todo : make this customizable
 
 	std::vector<std::string> title_lines;
@@ -28,7 +28,7 @@ struct SuccinctVideoView : public FixedSizeView {
 
 	SuccinctVideoView(double x0, double y0, double width, double height)
 	    : View(x0, y0), FixedSizeView(x0, y0, width, height) {}
-	virtual ~SuccinctVideoView() {}
+	virtual ~SuccinctVideoView() = default;
 
 	SuccinctVideoView *set_title_lines(const std::vector<std::string> &title_lines) { // mandatory
 		this->title_lines = title_lines;
@@ -52,7 +52,7 @@ struct SuccinctVideoView : public FixedSizeView {
 	}
 	float get_title_width() const { return x1 - x0 - (get_thumbnail_width() + 3); }
 
-	void draw_() const override {
+	virtual void draw_() const override {
 		thumbnail_draw(thumbnail_handle, x0, y0, get_thumbnail_width(), get_thumbnail_height());
 		if (bottom_right_overlay.size()) {
 			float overlay_width = Draw_get_width(bottom_right_overlay, DURATION_FONT_SIZE);

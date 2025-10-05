@@ -14,10 +14,12 @@
 #include "network_decoder/thumbnail_loader.hpp"
 #include "util/async_task.hpp"
 #include "util/misc_tasks.hpp"
+#include "ui/views/specialized/modern_succinct_video.hpp"
 #include "data_io/subscription_util.hpp"
 
 #define VIDEOS_MARGIN 6
-#define VIDEOS_VERTICAL_INTERVAL (VIDEO_LIST_THUMBNAIL_HEIGHT + VIDEOS_MARGIN)
+#define MODERN_VIDEO_LIST_HEIGHT 80
+#define VIDEOS_VERTICAL_INTERVAL (MODERN_VIDEO_LIST_HEIGHT + VIDEOS_MARGIN)
 #define LOAD_MORE_MARGIN 30
 #define BANNER_HEIGHT 55
 #define ICON_SIZE 55
@@ -220,8 +222,9 @@ void Channel_resume(std::string arg) {
 void Channel_suspend(void) { thread_suspend = true; }
 
 View *video2view(const YouTubeVideoSuccinct &video) {
-	return (new SuccinctVideoView(0, 0, 320, VIDEO_LIST_THUMBNAIL_HEIGHT))
-	    ->set_title_lines(truncate_str(video.title, 320 - (VIDEO_LIST_THUMBNAIL_WIDTH + 3), 2, 0.5, 0.5))
+	ModernSuccinctVideoView *cur_view = (new ModernSuccinctVideoView(0, 0, 320, MODERN_VIDEO_LIST_HEIGHT));
+	float title_width = cur_view->get_title_width();
+	return cur_view->set_title_lines(truncate_str(video.title, title_width, 2, 0.55, 0.55))
 	    ->set_thumbnail_url(video.thumbnail_url)
 	    ->set_auxiliary_lines({video.publish_date, video.views_str})
 	    ->set_bottom_right_overlay(video.duration_text)
@@ -229,8 +232,9 @@ View *video2view(const YouTubeVideoSuccinct &video) {
 	    ->set_on_view_released([video](View &) { clicked_url = video.url; });
 }
 View *stream2view(const YouTubeVideoSuccinct &stream) {
-    return (new SuccinctVideoView(0, 0, 320, VIDEO_LIST_THUMBNAIL_HEIGHT))
-        ->set_title_lines(truncate_str(stream.title, 320 - (VIDEO_LIST_THUMBNAIL_WIDTH + 3), 2, 0.5, 0.5))
+    ModernSuccinctVideoView *cur_view = (new ModernSuccinctVideoView(0, 0, 320, MODERN_VIDEO_LIST_HEIGHT));
+	float title_width = cur_view->get_title_width();
+    return cur_view->set_title_lines(truncate_str(stream.title, title_width, 2, 0.55, 0.55))
         ->set_thumbnail_url(stream.thumbnail_url)
         ->set_auxiliary_lines({stream.publish_date, stream.views_str})
         ->set_bottom_right_overlay(stream.duration_text)
@@ -239,8 +243,9 @@ View *stream2view(const YouTubeVideoSuccinct &stream) {
 }
 
 View *shorts2view(const YouTubeVideoSuccinct &shorts) {
-    return (new SuccinctVideoView(0, 0, 320, VIDEO_LIST_THUMBNAIL_HEIGHT))
-        ->set_title_lines(truncate_str(shorts.title, 320 - (VIDEO_LIST_THUMBNAIL_WIDTH + 3), 2, 0.5, 0.5))
+    ModernSuccinctVideoView *cur_view = (new ModernSuccinctVideoView(0, 0, 320, MODERN_VIDEO_LIST_HEIGHT));
+	float title_width = cur_view->get_title_width();
+    return cur_view->set_title_lines(truncate_str(shorts.title, title_width, 2, 0.55, 0.55))
         ->set_thumbnail_url(shorts.thumbnail_url)
         ->set_auxiliary_lines({shorts.publish_date, shorts.views_str})
         ->set_bottom_right_overlay("")
@@ -248,8 +253,9 @@ View *shorts2view(const YouTubeVideoSuccinct &shorts) {
         ->set_on_view_released([shorts](View &) { clicked_url = shorts.url; });
 }
 View *playlist2view(const YouTubePlaylistSuccinct &playlist) {
-	return (new SuccinctVideoView(0, 0, 320, VIDEO_LIST_THUMBNAIL_HEIGHT))
-	    ->set_title_lines(truncate_str(playlist.title, 320 - (VIDEO_LIST_THUMBNAIL_WIDTH + 3), 2, 0.5, 0.5))
+	ModernSuccinctVideoView *cur_view = (new ModernSuccinctVideoView(0, 0, 320, MODERN_VIDEO_LIST_HEIGHT));
+	float title_width = cur_view->get_title_width();
+	return cur_view->set_title_lines(truncate_str(playlist.title, title_width, 2, 0.55, 0.55))
 	    ->set_thumbnail_url(playlist.thumbnail_url)
 	    ->set_auxiliary_lines({playlist.video_count_str})
 	    ->set_is_playlist(true)
@@ -326,10 +332,10 @@ View *community_post_2_view(const YouTubeChannelDetail::CommunityPost &post) {
 	if (post.video.title != "") {
 		std::string video_url = post.video.url;
 		res->additional_video_view =
-		    (new SuccinctVideoView(0, 0, 320 - POST_ICON_SIZE - SMALL_MARGIN * 2, VIDEO_LIST_THUMBNAIL_HEIGHT * 0.8));
+		    (new ModernSuccinctVideoView(0, 0, 320 - POST_ICON_SIZE - SMALL_MARGIN * 2, MODERN_VIDEO_LIST_HEIGHT * 0.8));
 		res->additional_video_view
 		    ->set_title_lines(truncate_str(post.video.title,
-		                                   res->additional_video_view->get_title_width() - SMALL_MARGIN, 2, 0.5, 0.5))
+		                                   res->additional_video_view->get_title_width() - SMALL_MARGIN, 2, 0.55, 0.55))
 		    ->set_thumbnail_url(post.video.thumbnail_url)
 		    ->set_auxiliary_lines({post.video.author})
 		    ->set_bottom_right_overlay(post.video.duration_text)

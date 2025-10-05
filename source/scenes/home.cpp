@@ -15,8 +15,11 @@
 #include "network_decoder/thumbnail_loader.hpp"
 #include "util/misc_tasks.hpp"
 #include "util/async_task.hpp"
+#include "ui/views/specialized/modern_succinct_video.hpp"
 
 #define MAX_THUMBNAIL_LOAD_REQUEST 12
+
+#define MODERN_VIDEO_LIST_HEIGHT 80
 
 #define FEED_RELOAD_BUTTON_HEIGHT 18
 #define TOP_HEIGHT 25
@@ -162,8 +165,9 @@ void Home_resume(std::string arg) {
 
 // async functions
 static SuccinctVideoView *convert_video_to_view(const YouTubeVideoSuccinct &video) {
-	SuccinctVideoView *res = new SuccinctVideoView(0, 0, 320, VIDEO_LIST_THUMBNAIL_HEIGHT);
-	res->set_title_lines(truncate_str(video.title, 320 - (VIDEO_LIST_THUMBNAIL_WIDTH + 3), 2, 0.5, 0.5));
+	ModernSuccinctVideoView *res = new ModernSuccinctVideoView(0, 0, 320, MODERN_VIDEO_LIST_HEIGHT);
+	float title_width = res->get_title_width();
+	res->set_title_lines(truncate_str(video.title, title_width, 2, 0.55, 0.55));
 	res->set_auxiliary_lines({video.views_str, video.publish_date});
 	res->set_bottom_right_overlay(video.duration_text);
 	res->set_thumbnail_url(video.thumbnail_url);

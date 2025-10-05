@@ -13,11 +13,13 @@
 #include "util/async_task.hpp"
 #include "util/misc_tasks.hpp"
 #include "util/util.hpp"
+#include "ui/views/specialized/modern_succinct_video.hpp"
 
 #define ICON_SIZE 55
 #define TAB_SELECTOR_HEIGHT 20
 #define TAB_SELECTOR_SELECTED_LINE_HEIGHT 3
-#define SUGGESTIONS_VERTICAL_INTERVAL (VIDEO_LIST_THUMBNAIL_HEIGHT + SMALL_MARGIN)
+#define MODERN_VIDEO_LIST_HEIGHT 80
+#define SUGGESTIONS_VERTICAL_INTERVAL (MODERN_VIDEO_LIST_HEIGHT + SMALL_MARGIN)
 #define SUGGESTION_LOAD_MORE_MARGIN 30
 #define COMMENT_LOAD_MORE_MARGIN 30
 #define CONTROL_BUTTON_HEIGHT 20
@@ -719,7 +721,6 @@ void VideoPlayer_init(void) {
 
 #define TITLE_MAX_WIDTH (320 - SMALL_MARGIN * 2)
 #define DESC_MAX_WIDTH (320 - SMALL_MARGIN * 2)
-#define SUGGESTION_TITLE_MAX_WIDTH (320 - (VIDEO_LIST_THUMBNAIL_WIDTH + SMALL_MARGIN))
 #define COMMENT_MAX_WIDTH (320 - (POST_ICON_SIZE + 2 * SMALL_MARGIN))
 #define REPLY_INDENT 25
 #define REPLY_MAX_WIDTH (320 - REPLY_INDENT - (REPLY_ICON_SIZE + 2 * SMALL_MARGIN))
@@ -753,11 +754,12 @@ void VideoPlayer_init(void) {
     }
     // also used for playlist items
     static SuccinctVideoView *suggestion_to_view(const YouTubeSuccinctItem &item) {
-	    SuccinctVideoView *cur_view = (new SuccinctVideoView(0, 0, 320, VIDEO_LIST_THUMBNAIL_HEIGHT));
-	    cur_view->set_title_lines(truncate_str(item.get_name(), SUGGESTION_TITLE_MAX_WIDTH, 2, 0.5, 0.5));
+	    ModernSuccinctVideoView *cur_view = (new ModernSuccinctVideoView(0, 0, 320, MODERN_VIDEO_LIST_HEIGHT));
+	    float title_width = cur_view->get_title_width();
+	    cur_view->set_title_lines(truncate_str(item.get_name(), title_width, 2, 0.55, 0.55));
 	    cur_view->set_thumbnail_url(item.get_thumbnail_url());
 	    if (item.type == YouTubeSuccinctItem::VIDEO) {
-		    cur_view->set_auxiliary_lines({item.video.author});
+		    cur_view->set_auxiliary_lines({item.video.author, item.video.views_str});
 		    cur_view->set_bottom_right_overlay(item.video.duration_text);
 	    } else if (item.type == YouTubeSuccinctItem::PLAYLIST) {
 		    cur_view->set_auxiliary_lines({item.playlist.video_count_str});
@@ -2267,7 +2269,7 @@ void VideoPlayer_init(void) {
 
 				    osTickCounterUpdate(&counter0);
 				    if (!network_decoder.hw_decoder_enabled) {
-					    result = Util_converter_y2r_yuv420p_to_bgr565(yuv_video, &video, vid_width, vid_height, false);
+					    result = Util_converter_yuv420p_to_bgr565_asm(yuv_video, &video, vid_width, vid_height);
 					    video_need_free = true;
 				    }
 				    osTickCounterUpdate(&counter0);
