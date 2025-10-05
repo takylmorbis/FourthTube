@@ -105,11 +105,11 @@ static void update_watch_history(const std::vector<HistoryVideo> &new_watch_hist
 		}
 
 		ModernSuccinctVideoView *cur_view =
-		    (new ModernSuccinctVideoView(0, 0, 320, MODERN_VIDEO_LIST_HEIGHT))
-		        ->set_title_lines(i.title_lines)
-		        ->set_auxiliary_lines({i.author_name, view_count_str + " " + last_watch_time_str})
-		        ->set_bottom_right_overlay(i.length_text)
-		        ->set_thumbnail_url(youtube_get_video_thumbnail_url_by_id(i.id));
+		    new ModernSuccinctVideoView(0, 0, 320, MODERN_VIDEO_LIST_HEIGHT);
+		cur_view->set_title_lines(i.title_lines);
+		cur_view->set_auxiliary_lines({i.author_name, view_count_str + " " + last_watch_time_str});
+		cur_view->set_bottom_right_overlay(i.length_text);
+		cur_view->set_thumbnail_url(youtube_get_video_thumbnail_url_by_id(i.id));
 
 		cur_view
 		    ->set_get_background_color([](const View &view) {
